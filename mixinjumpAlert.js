@@ -8,12 +8,12 @@ export const jumpAlert = async (mode, title, status) => {
     button: false,
     timer: 2500,
   });
-
+  
   if (mode === 'login' || mode === 'check') {
     // 登入、登入狀態檢查
     window.location = status === 'success' ? 'admin.html' : 'index.html';
   } else if (mode === 'logout') {
     // 登出
     window.location = status === 'success' ? 'index.html' : 'admin.html';
-  } 
+  };
 };

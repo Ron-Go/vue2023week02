@@ -82,7 +82,7 @@ const admin = {
                   <!-- item.is_enabled用v-bind綁定class樣式 -->
                   <!-- click行為觸發changeStatus()，代入id尋找對應商品物件資料並更改is_enabled屬性 -->
                   <span :class="{ 'text-success': item.is_enabled, 'text-danger': !item.is_enabled}"
-                  @click="changeStatus(item.id)">{{item.is_enabled ? '啟用' : '未啟用'}}</span>
+                  @click="changeStatus(item)">{{item.is_enabled ? '啟用' : '未啟用'}}</span>
                 </td>
                 <td width="120">
                   <!-- click行為觸發openModal()開啟互動視窗 -->
@@ -139,6 +139,24 @@ const admin = {
         return b[attr] - a[attr];
       })
     };
+
+    // 更改產品啟用
+    const changeStatus = (item) => {
+      const { id } = item;
+      item.is_enabled = !item.is_enabled;
+      (async () => {
+        try {
+          // 修改商品內容
+          const res1 = await axios.put(`${url}/api/${path}/admin/product/${id}`, { data: item });
+          jumpAlert('', res1.data.message, 'success');
+          // 取得全部商品
+          const res2 = await axios.get(`${url}/api/${path}/admin/products`)
+          products.value = res2.data.products;
+        } catch (error) {
+          jumpAlert('', error.response.data.message, 'error');
+        };
+      })();
+    };
     // 登出
     const logOut = () => {
       axios.post(`${url}/logout`)
@@ -155,6 +173,7 @@ const admin = {
       tempProduct,
       openModal,
       itemSort,
+      changeStatus,
       logOut,
     };
   },
